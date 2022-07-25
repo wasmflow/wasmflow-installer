@@ -6,7 +6,9 @@
   #######################
 
   # Binary install location
-  : ${INSTALL_DIR:="${HOME}/.wasmflow/bin"}
+  if [[ -z $INSTALL_DIR ]]; then
+    : ${INSTALL_DIR:="${HOME}/.wasmflow/bin"}
+  fi
 
   # Github Organization name
   ORG_NAME=wasmflow
