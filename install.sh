@@ -91,6 +91,11 @@
     if [ -f "$INSTALLED_TEST_BIN" ]; then
       local version=$($INSTALLED_TEST_BIN --version)
       echo "Detected existing component: ${INSTALLED_TEST_BIN} ($version)"
+      
+      echo "Removing existing components..."
+      rm -rf ${INSTALL_DIR}/wasmflow
+      rm -rf ${INSTALL_DIR}/wafl
+      
       echo "Reinstalling ${PROJECT_NAME} - ${INSTALLED_TEST_BIN}..."
     else
       echo "Installing ${PROJECT_NAME}..."
