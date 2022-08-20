@@ -87,19 +87,10 @@
     fi
   }
 
-  checkExistingFile() {
-    if [ -f "$INSTALLED_TEST_BIN" ]; then
-      local version=$($INSTALLED_TEST_BIN --version)
-      echo "Detected existing component: ${INSTALLED_TEST_BIN} ($version)"
-      
-      echo "Removing existing components..."
-      rm -rf ${INSTALL_DIR}/wasmflow
-      rm -rf ${INSTALL_DIR}/wafl
-      
-      echo "Reinstalling ${PROJECT_NAME} - ${INSTALLED_TEST_BIN}..."
-    else
-      echo "Installing ${PROJECT_NAME}..."
-    fi
+  removeExistingFile() {
+    echo "Removing any existing components..."
+    rm -f ${INSTALL_DIR}/wasmflow
+    rm -f ${INSTALL_DIR}/wafl
   }
 
   downloadFile() {
@@ -111,10 +102,15 @@
     fi
 
     echo "Downloading $DOWNLOAD_URL..."
-    if [ "$HTTP_REQUEST_CLI" == "curl" ]; then
-      curl -SsL "$DOWNLOAD_URL" -o "$ARTIFACT_TMP_FILE"
+    if [ "$DOWNLOAD" == "false" ]; then
+      echo "Skipping download..."
+      ARTIFACT_TMP_FILE=$ARTIFACT_NAME
     else
-      wget -q -O "$ARTIFACT_TMP_FILE" "$DOWNLOAD_URL"
+      if [ "$HTTP_REQUEST_CLI" == "curl" ]; then
+        curl -SsL "$DOWNLOAD_URL" -o "$ARTIFACT_TMP_FILE"
+      else
+        wget -q -O "$ARTIFACT_TMP_FILE" "$DOWNLOAD_URL"
+      fi
     fi
 
     if [ ! -f "$ARTIFACT_TMP_FILE" ]; then
@@ -196,12 +192,12 @@
   intro
   separate_output
   verifySupported
-  checkExistingFile
   checkHttpRequestCLI
 
   echo "Installing latest $PROJECT_NAME release..."
 
   downloadFile "latest"
+  removeExistingFile
   installFile
   cleanup
 

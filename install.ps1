@@ -40,14 +40,7 @@ if ((Get-ExecutionPolicy) -gt 'RemoteSigned' -or (Get-ExecutionPolicy) -eq 'ByPa
 [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
 
 # Check if CLI is installed.
-if (Test-Path $cliFilepath -PathType Leaf) {
-  Write-Warning "Existing $projectName component detected - $cliFilepath"
-  Invoke-Expression "$cliFilepath --version"
-  Write-Output "Reinstalling $projectName..."
-}
-else {
-  Write-Output "Installing $projectName..."
-}
+Write-Output "Installing $projectName..."
 
 # Create project root directory
 Write-Output "Creating $projectRoot directory"
@@ -59,7 +52,8 @@ if (!(Test-Path $projectRoot -PathType Container)) {
 $assetName = "${assetBasename}.${archiveExt}"
 if ($release -eq "latest") {
   $zipFileUrl = "${baseUrl}/${release}/download/${assetName}"
-} else {
+}
+else {
   $zipFileUrl = "${baseUrl}/download/${release}/${assetName}"
 }
 
